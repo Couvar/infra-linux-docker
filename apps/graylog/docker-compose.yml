@@ -28,8 +28,8 @@ services:
   graylog:
     image: graylog/graylog:6.3
     environment:
-      - GRAYLOG_PASSWORD_SECRET=7f570d506b9c5a2febd73b491fe2ad4cf0bbb92e81b05bb63603af557baa0688
-      - GRAYLOG_ROOT_PASSWORD_SHA2=759e8375bf3689a3491a1c8a4be9bf7055f026031f0031e2110f1b72d0a99f3e
+      - GRAYLOG_PASSWORD_SECRET="7f570d506b9c5a2febd73b491fe2ad4cf0bbb92e81b05bb63603af557baa0688"
+      - GRAYLOG_ROOT_PASSWORD_SHA2="759e8375bf3689a3491a1c8a4be9bf7055f026031f0031e2110f1b72d0a99f3e"
       - GRAYLOG_HTTP_EXTERNAL_URI=http://localhost:9000/
     depends_on:
       - mongo
