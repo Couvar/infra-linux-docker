@@ -1,66 +1,47 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  mongo:
-    image: mongo:5.0
-    container_name: graylog-mongo
-    restart: unless-stopped
-    networks:
-      - graylog
+  mongodb:
+    image: mongo:6.0
+    container_name: graylog-mongodb
+    restart: always
+    volumes:
+      - mongo_data:/data/db
 
   opensearch:
-    image: opensearchproject/opensearch:2.14.0
+    image: opensearchproject/opensearch:2.7.0
     container_name: graylog-opensearch
     environment:
       - discovery.type=single-node
-      - plugins.security.disabled=true
       - bootstrap.memory_lock=true
-      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
-      - opensearch-data:/usr/share/opensearch/data
-    restart: unless-stopped
-    networks:
-      - graylog
+      - opensearch_data:/usr/share/opensearch/data
+    ports:
+      - "9200:9200"
+    restart: always
 
   graylog:
     image: graylog/graylog:6.3
-    container_name: graylog-server
+    container_name: graylog
     depends_on:
-      - mongo
+      - mongodb
       - opensearch
-    environment:
-      - GRAYLOG_NODE_ID_FILE=/usr/share/graylog/config/node-id
-      - GRAYLOG_PASSWORD_SECRET_FILE=/run/secrets/password_secret
-      - GRAYLOG_ROOT_PASSWORD_SHA2_FILE=/run/secrets/root_password_sha2
-      - GRAYLOG_HTTP_BIND_ADDRESS=0.0.0.0:9000
-      - GRAYLOG_HTTP_EXTERNAL_URI=http://localhost:9000/
-      - GRAYLOG_ELASTICSEARCH_HOSTS=http://opensearch:9200
-      - GRAYLOG_MONGODB_URI=mongodb://mongo:27017/graylog
-    secrets:
-      - password_secret
-      - root_password_sha2
     ports:
-      - "9000:9000"   # Web Interface
-      - "12201:12201/udp"  # GELF UDP Input
-    volumes:
-      - graylog-data:/usr/share/graylog/data
-    restart: unless-stopped
-    networks:
-      - graylog
-
-secrets:
-  password_secret:
-    file: ./config/graylog-password-secret.txt
-  root_password_sha2:
-    file: ./config/graylog-root-password-sha2.txt
+      - "9000:9000"
+      - "12201:12201/udp"
+    environment:
+      - GRAYLOG_PASSWORD_SECRET=/BepvHBtt6Psev9j85Nny/PHo5drwlYwlGGykujLVS8=
+      - GRAYLOG_ROOT_PASSWORD_SHA2=ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
+      - GRAYLOG_OPENSEARCH_HOSTS=http://opensearch:9200
+      - GRAYLOG_MONGODB_URI=mongodb://mongodb/graylog
+    restart: always
 
 volumes:
-  graylog-data:
-  opensearch-data:
-
-networks:
-  graylog:
+  mongo_data:
+  opensearch_data:
