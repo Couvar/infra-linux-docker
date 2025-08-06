@@ -1,48 +1,66 @@
-version: '3'
+version: '3.8'
 
 services:
   mongo:
-    image: mongo:7.0-rc
-    volumes:
-      - mongo_data:/data/db
+    image: mongo:5.0
+    container_name: graylog-mongo
     restart: unless-stopped
+    networks:
+      - graylog
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+  opensearch:
+    image: opensearchproject/opensearch:2.14.0
+    container_name: graylog-opensearch
     environment:
-      - http.host=0.0.0.0
-      - transport.host=localhost
-      - network.host=0.0.0.0
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
       - discovery.type=single-node
-      - xpack.security.enabled=false
+      - plugins.security.disabled=true
+      - bootstrap.memory_lock=true
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
     ulimits:
       memlock:
         soft: -1
         hard: -1
-    mem_limit: 2g
     volumes:
-      - es_data:/usr/share/elasticsearch/data
+      - opensearch-data:/usr/share/opensearch/data
     restart: unless-stopped
+    networks:
+      - graylog
 
   graylog:
     image: graylog/graylog:6.3
-    environment:
-      - GRAYLOG_ROOT_USERNAME= "admin"
-      - GRAYLOG_PASSWORD_SECRET= "7f570d506b9c5a2febd73b491fe2ad4cf0bbb92e81b05bb63603af557baa0688"
-      - GRAYLOG_ROOT_PASSWORD_SHA2= "759e8375bf3689a3491a1c8a4be9bf7055f026031f0031e2110f1b72d0a99f3e"
-      - GRAYLOG_HTTP_EXTERNAL_URI=http://localhost:9000/
+    container_name: graylog-server
     depends_on:
       - mongo
-      - elasticsearch
+      - opensearch
+    environment:
+      - GRAYLOG_NODE_ID_FILE=/usr/share/graylog/config/node-id
+      - GRAYLOG_PASSWORD_SECRET_FILE=/run/secrets/password_secret
+      - GRAYLOG_ROOT_PASSWORD_SHA2_FILE=/run/secrets/root_password_sha2
+      - GRAYLOG_HTTP_BIND_ADDRESS=0.0.0.0:9000
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://localhost:9000/
+      - GRAYLOG_ELASTICSEARCH_HOSTS=http://opensearch:9200
+      - GRAYLOG_MONGODB_URI=mongodb://mongo:27017/graylog
+    secrets:
+      - password_secret
+      - root_password_sha2
     ports:
-      - "9000:9000"
-      - "12201:12201/udp"
-    restart: unless-stopped
+      - "9000:9000"   # Web Interface
+      - "12201:12201/udp"  # GELF UDP Input
     volumes:
-      - graylog_journal:/usr/share/graylog/data/journal
+      - graylog-data:/usr/share/graylog/data
+    restart: unless-stopped
+    networks:
+      - graylog
+
+secrets:
+  password_secret:
+    file: ./config/graylog-password-secret.txt
+  root_password_sha2:
+    file: ./config/graylog-root-password-sha2.txt
 
 volumes:
-  mongo_data:
-  es_data:
-  graylog_journal:
+  graylog-data:
+  opensearch-data:
+
+networks:
+  graylog:
