@@ -10,7 +10,6 @@ apt update && apt upgrade -y
 
 echo "[+] Unattended Upgrades aktivieren..."
 apt install -y unattended-upgrades apt-listchanges
-dpkg-reconfigure --priority=low unattended-upgrades
 
 echo "[+] Firewall aktivieren (ufw)..."
 apt install -y ufw
