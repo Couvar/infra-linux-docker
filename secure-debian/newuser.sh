@@ -13,4 +13,4 @@ chown -R $USERNAME:$USERNAME /home/$USERNAME/.ssh
 chmod 700 /home/$USERNAME/.ssh
 chmod 600 /home/$USERNAME/.ssh/authorized_keys
 
-echo "User $USERNAME wurde erstellt und SSH-Key hinzugefügt."
+echo "[+] User $USERNAME wurde erstellt und SSH-Key hinzugefügt."
