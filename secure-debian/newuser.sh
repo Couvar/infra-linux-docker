@@ -1,7 +1,7 @@
 #!/bin/bash
 # Skript zum Anlegen eines neuen Benutzers mit SSH-Key
 
-USERNAME="localadmin"
+USERNAME="sysadmin"
 SSH_KEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGGzW3voGAIx1EzeT4juFRns0hLuADU52MAiV6Gx210t atd\r.krause@W-BS-RKR"
 
 # Prüfe, ob nötige Pakete installiert sind
