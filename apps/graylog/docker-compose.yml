@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo:5
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.17.9
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=localhost
+      - network.host=0.0.0.0
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 2g
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    restart: unless-stopped
+
+  graylog:
+    image: graylog/graylog:5
+    environment:
+      - GRAYLOG_PASSWORD_SECRET=${GRAYLOG_PASSWORD_SECRET}
+      - GRAYLOG_ROOT_PASSWORD_SHA2=${GRAYLOG_ROOT_PASSWORD_SHA2}
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://${GRAYLOG_HTTP_EXTERNAL_URI}
+    depends_on:
+      - mongo
+      - elasticsearch
+    ports:
+      - "9000:9000"
+      - "12201:12201/udp"
+    restart: unless-stopped
+    volumes:
+      - graylog_journal:/usr/share/graylog/data/journal
+
+volumes:
+  mongo_data:
+  es_data:
+  graylog_journal:
