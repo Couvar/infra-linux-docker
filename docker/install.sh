@@ -46,7 +46,11 @@ echo "[INFO] Testcontainer starten (hello-world)..."
 docker run --rm hello-world
 
 echo "[INFO] Sichere Standard-Netzwerkumgebung einrichten..."
-docker network create secure-net || echo "[WARN] Netzwerk 'secure-net' existiert bereits"
+cat <<EOF > /etc/docker/daemon.json
+{
+  "bip": "172.17.0.1/24"
+}
+EOF
 
 echo "[INFO] Installation abgeschlossen."
 echo "Bitte ab- und wieder anmelden, damit Docker-Gruppenzugriff wirksam wird."
