@@ -21,8 +21,6 @@ PASSWORD_SHA2=$(echo -n "$ADMIN_PASS" | sha256sum | awk '{print $1}')
 echo "Generiere .env Datei mit geheimen Variablen..."
 
 cat > .env <<EOF
-GRAYLOG_PASSWORD_SECRET=$PASSWORD_SECRET
-GRAYLOG_ROOT_PASSWORD_SHA2=$PASSWORD_SHA2
 GRAYLOG_HTTP_EXTERNAL_URI=127.0.0.1:9000
 EOF
 
