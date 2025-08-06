@@ -37,7 +37,7 @@ services:
     environment:
       - GRAYLOG_PASSWORD_SECRET=/BepvHBtt6Psev9j85Nny/PHo5drwlYwlGGykujLVS8=
       - GRAYLOG_ROOT_PASSWORD_SHA2=ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f
-      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://192.168.240.19:9000/
       - GRAYLOG_OPENSEARCH_HOSTS=http://opensearch:9200
       - GRAYLOG_MONGODB_URI=mongodb://mongodb/graylog
     restart: always
