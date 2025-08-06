@@ -17,6 +17,7 @@ for pkg in "${REQUIRED_PACKAGES[@]}"; do
     fi
 done
 
+su -l
 adduser --disabled-password --gecos "" $USERNAME
 usermod -aG sudo $USERNAME
 
