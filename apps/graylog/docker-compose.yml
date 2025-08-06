@@ -45,6 +45,3 @@ volumes:
   mongo_data:
   es_data:
   graylog_journal:
-
-  GRAYLOG_PASSWORD_SECRET=$PASSWORD_SECRET
-GRAYLOG_ROOT_PASSWORD_SHA2=$PASSWORD_SHA2
