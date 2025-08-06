@@ -4,35 +4,26 @@
 
 set -e
 
-echo "[INFO] System aktualisieren..."
-apt update && apt upgrade -y
+echo "[INFO] Pakete und Apt Sources aktualisieren"
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-echo "[INFO] Abhängigkeiten installieren..."
-apt install -y \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release \
-    software-properties-common \
-    apt-transport-https
-
-echo "[INFO] Docker GPG Key hinzufügen..."
-mkdir -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/debian/gpg | \
-    gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-
-echo "[INFO] Docker Repository hinzufügen..."
+# Add the repository to Apt sources:
 echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-  https://download.docker.com/linux/debian $(lsb_release -cs) stable" | \
-  tee /etc/apt/sources.list.d/docker.list > /dev/null
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
 
 echo "[INFO] Paketliste aktualisieren..."
 apt update
 
 echo "[INFO] Docker Engine und Plugins installieren..."
-apt install -y docker-ce docker-ce-cli containerd.io \
-    docker-buildx-plugin docker-compose-plugin
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 echo "[INFO] Docker auf Autostart setzen..."
 systemctl enable docker
@@ -43,7 +34,7 @@ groupadd -f docker
 usermod -aG docker "${SUDO_USER:-$USER}"
 
 echo "[INFO] Testcontainer starten (hello-world)..."
-docker run --rm hello-world
+sudo docker run hello-world
 
 echo "[INFO] Installation abgeschlossen."
 echo "Bitte ab- und wieder anmelden, damit Docker-Gruppenzugriff wirksam wird."
