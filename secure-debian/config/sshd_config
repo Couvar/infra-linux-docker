@@ -1,0 +1,44 @@
+# SSH Daemon Konfigurationsdatei
+
+Port 22
+ListenAddress 0.0.0.0
+ListenAddress ::
+
+Protocol 2
+
+# Nur Key-basiertes Login erlauben
+PubkeyAuthentication yes
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+UsePAM yes
+
+# Root-Login deaktivieren
+PermitRootLogin no
+
+# Maximale Authentifizierungsversuche
+MaxAuthTries 3
+
+# Idle Timeout (Abmelden nach Inaktivität)
+ClientAliveInterval 300
+ClientAliveCountMax 0
+
+# Protokollierung erhöhen
+LogLevel VERBOSE
+
+# Erlaubte Benutzer (optional, wenn du nur lokaleadmin zulassen willst)
+# AllowUsers localadmin
+
+# Host Key Algorithmen (optional, alte verschlüsselte Algorithmen aus)
+HostKeyAlgorithms ssh-ed25519,ecdsa-sha2-nistp256,rsa-sha2-512,rsa-sha2-256
+
+# Max Sessions pro Verbindung
+MaxSessions 10
+
+# X11 Forwarding deaktivieren (für Labs oft unnötig)
+X11Forwarding no
+
+# TCP Forwarding (optional, je nach Bedarf)
+AllowTcpForwarding no
+
+# Banner anzeigen (optional)
+# Banner /etc/issue.net
