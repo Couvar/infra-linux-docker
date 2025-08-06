@@ -1,7 +1,7 @@
-# 🧪 Lab Infrastructure – Docker on Ubuntu
+# Lab Infrastructure – Docker on Ubuntu
 Dieses Repository enthält die Konfigurationen, Skripte und Dokumentationen meines persönlichen Lab-Setups zur Virtualisierung und Containerisierung auf einem Ubuntu Server in VirtualBox/Proxmox.
 
-## 🔧 Zielsetzung
+## Zielsetzung
 
 Das Projekt dient als Lernumgebung für:
 
