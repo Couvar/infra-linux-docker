@@ -22,11 +22,11 @@ echo "[+] Wichtige Sicherheitstools installieren..."
 apt install -y fail2ban logwatch debsums curl wget vim gnupg lynis sudo
 
 echo "[+] Fail2Ban konfigurieren..."
-cp hardening/fail2ban.local /etc/fail2ban/jail.local
+cp config/fail2ban.local /etc/fail2ban/jail.local
 systemctl restart fail2ban
 
 echo "[+] SSH absichern..."
-cp hardening/sshd_config /etc/ssh/sshd_config
+cp config/sshd_config /etc/ssh/sshd_config
 systemctl restart ssh
 
 echo "[+] Root-Login deaktivieren..."
