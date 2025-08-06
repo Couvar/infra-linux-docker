@@ -31,7 +31,7 @@ systemctl start docker
 
 echo "[INFO] Docker Gruppe konfigurieren..."
 groupadd -f docker
-usermod -aG docker "${SUDO_USER:-$USER}"
+sudo usermod -aG docker sysadmin
 
 echo "[INFO] Testcontainer starten (hello-world)..."
 sudo docker run hello-world
